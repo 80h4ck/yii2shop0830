@@ -21,4 +21,5 @@ return [
             ],
         ],
     ],
+    'uploadType'=>"local",//本地:local 七牛:qiniu  阿里云：aliyun
 ];
