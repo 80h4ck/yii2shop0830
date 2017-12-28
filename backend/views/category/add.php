@@ -1,5 +1,6 @@
 <?php
 
+
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -11,8 +12,8 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-        <?= $form->field($model, 'name') ?>
-        <?= $form->field($model, 'parent_id')->hiddenInput() ?>
+    <?= $form->field($model, 'name') ?>
+    <?= $form->field($model, 'parent_id') ?>
     <?= \liyuze\ztree\ZTree::widget([
         'setting' => '{
 			data: {
@@ -33,11 +34,24 @@ use yii\widgets\ActiveForm;
         'nodes' => $cates
     ]);
     ?>
-        <?= $form->field($model, 'intro') ?>
-    
-        <div class="form-group">
-            <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
-        </div>
+    <?= $form->field($model, 'intro') ?>
+
+    <div class="form-group">
+        <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
+    </div>
     <?php ActiveForm::end(); ?>
 
 </div><!-- category-add -->
+<?php
+//定义JS代码块
+$js=<<<EOF
+    var treeObj = $.fn.zTree.getZTreeObj("w1");
+    treeObj.expandAll(true);
+    
+    var node = treeObj.getNodeByParam("id", "{$model->parent_id}", null);//得到节点
+    treeObj.selectNode(node);//选择节点
+    console.log(node);
+EOF;
+//把JS代码加载到JQuery之后
+$this->registerJs($js);
+?>
