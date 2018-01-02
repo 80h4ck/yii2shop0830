@@ -27,6 +27,8 @@ class GoodsController extends \yii\web\Controller
 
         //得到所有数据
         $query = Goods::find();
+
+
         //根据搜索条件
         $request=\Yii::$app->request;
         $minPrice=$request->get('minPrice');
@@ -45,23 +47,31 @@ class GoodsController extends \yii\web\Controller
 
         }
 
+        //名称或货号
         if ($keyword){
 
             $query->andWhere("name like '%{$keyword}%' or sn like '%{$keyword}%'");
         }
 
-        if ($status==='1'){
+        //判断状态 $status==='0' or $status==='1'  必需是全等号 接收的值都是字符串
+        if (in_array($status,['0','1'])){
+
+            $query->andWhere(['status'=>$status]);
 
         }
 
 
 
+
+        //实例化分页对象
+
         $pages = new Pagination(
             [
-                'totalCount' => $query->count(),
-                'pageSize' => 2
+                'totalCount' => $query->count(),//总条数
+                'pageSize' => 5//第页显示条数 默认20
             ]
         );
+        // select * from goods limit 4,2;
         $models = $query->offset($pages->offset)
             ->limit($pages->limit)
             ->all();

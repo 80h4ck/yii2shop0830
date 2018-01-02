@@ -70,10 +70,12 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
+        //没有登录
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
@@ -95,4 +97,6 @@ class SiteController extends Controller
 
         return $this->goHome();
     }
+
+
 }

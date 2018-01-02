@@ -61,6 +61,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id)
     {
+        //select * from admin where id =1 and status=0
         return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
     }
 
@@ -123,6 +124,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getId()
     {
+       // return $this->id;
         return $this->getPrimaryKey();
     }
 
