@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use backend\models\Mulu;
+
 class TestController extends \yii\web\Controller
 {
     public function actionIndex()
@@ -43,4 +45,10 @@ class TestController extends \yii\web\Controller
 
     }
 
+    public function actionMenu(){
+
+       var_dump(Mulu::menu());
+
+
+    }
 }
