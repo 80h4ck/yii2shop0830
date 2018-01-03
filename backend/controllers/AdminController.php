@@ -96,13 +96,25 @@ class AdminController extends \yii\web\Controller
 
         //创建模型对象
         $admin=new Admin();
-        $admin->username="wjj";
+        $admin->username="jgg";
         $admin->password_hash=\Yii::$app->security->generatePasswordHash('123456');
         $admin->auth_key=\Yii::$app->security->generateRandomString();
         $admin->login_ip=ip2long(\Yii::$app->request->userIP);
 
         $admin->save();
 
+
+        //实例化组件
+        $auth=\Yii::$app->authManager;
+
+        //找到角角
+        $role=$auth->getRole("学习喂员");
+
+        //给用户分组
+        $auth->assign($role,$admin->id);
+
+        //解除用户和组（角色）的关系
+        //$auth->revoke(角色对象，用户ID);
 
 
 
@@ -114,6 +126,15 @@ class AdminController extends \yii\web\Controller
         if (\Yii::$app->user->logout()) {
             return $this->redirect(['login']);
         }
+
+
+    }
+
+    public function actionRbac(){
+
+
+        var_dump(\Yii::$app->user->can('brand/add'));
+
 
 
     }

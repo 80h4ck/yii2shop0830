@@ -7,6 +7,9 @@ $params = array_merge(
 );
 
 return [
+    'as rbac' => [
+        'class' => \backend\filters\CheckFilter::className(),
+    ],
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
