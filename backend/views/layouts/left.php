@@ -29,7 +29,7 @@
         <?= dmstr\widgets\Menu::widget(
             [
                 'options' => ['class' => 'sidebar-menu tree', 'data-widget'=> 'tree'],
-               'items' => \backend\models\Mulu::menu(),
+               'items' => mdm\admin\components\MenuHelper::getAssignedMenu(Yii::$app->user->id),
                /* 'items' => [
                     ['label' => '0830后台菜单', 'options' => ['class' => 'header']],
                     [

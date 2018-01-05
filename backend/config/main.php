@@ -7,6 +7,7 @@ $params = array_merge(
 );
 
 return [
+
 /*    'as rbac' => [
         'class' => \backend\filters\CheckFilter::className(),
     ],*/
@@ -14,8 +15,29 @@ return [
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
-    'modules' => [],
+    'modules' => [
+        //模块的优先级要高于控制器
+        'rbac' => [
+            'class' => 'mdm\admin\Module',
+            'layout' => 'left-menu',
+        ]
+
+    ],
+    //RBAC全局注入
+    'as access' => [
+        'class' => 'mdm\admin\components\AccessControl',
+        'allowActions' => [
+            'admin/*',
+            'rbac/*',
+            // The actions listed here will be allowed to everyone including guests.
+            // So, 'admin/*' should not appear here in the production, of course.
+            // But in the earlier stages of your development, you may probably want to
+            // add a lot of actions here until you finally completed setting up rbac,
+            // otherwise you may not even take a first step.
+        ]
+    ],
     'components' => [
+
        /* 'view' => [
             'theme' => [
                 'pathMap' => [
@@ -23,6 +45,18 @@ return [
                 ],
             ],
         ],*/
+        'i18n' => [
+            'translations' => [
+                '*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@app/messages', // if advanced application, set @frontend/messages
+                    'sourceLanguage' => 'en',
+                    'fileMap' => [
+                        //'main' => 'main.php',
+                    ],
+                ],
+            ],
+        ],
         'request' => [
             'csrfParam' => '_csrf-backend',
         ],
@@ -57,4 +91,6 @@ return [
 
     ],
     'params' => $params,
+
+
 ];
