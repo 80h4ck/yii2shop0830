@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\Mulu;
+use Mrgoon\AliSms\AliSms;
 
 class TestController extends \yii\web\Controller
 {
@@ -49,6 +50,21 @@ class TestController extends \yii\web\Controller
 
        var_dump(Mulu::menu());
 
+
+    }
+
+    public function actionSms(){
+
+
+        $config = [
+            'access_key' => 'LTAIp1LvPceMANDn',
+            'access_secret' => 'OdCuRTf7owaoHRz9LVxyAy7kwLOeds',
+            'sign_name' => '周大宝',
+        ];
+        $sms=new AliSms();
+        $response = $sms->sendSms('17623780429', 'SMS_120405838', ['code'=> '123456'], $config);
+
+        var_dump($response);
 
     }
 }
