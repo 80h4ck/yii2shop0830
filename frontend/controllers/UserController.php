@@ -9,6 +9,8 @@ use yii\web\Session;
 
 class UserController extends \yii\web\Controller
 {
+
+    public $enableCsrfValidation=false;
     public function actions()
     {
         return [
@@ -36,6 +38,9 @@ class UserController extends \yii\web\Controller
           //  var_dump($request->post());
             //添加用户
             $user=new User();
+
+            //给user绑定场景
+            $user->setScenario('reg');
 
             //数据绑定
             $user->load($request->post());
@@ -85,6 +90,77 @@ class UserController extends \yii\web\Controller
 
     }
 
+    public function actionLogin()
+    {
+
+
+        $request=\Yii::$app->request;
+
+
+        if ($request->isPost) {
+
+
+
+             //创建对象
+            $model=new User();
+            $model->scenario="login";
+            // 绑定数据
+            $model->load($request->post());
+
+            var_dump($model->rememberMe);exit;
+            //后台验证
+            if ($model->validate()) {
+                  //1. 找到用户对象
+
+                $user=User::findOne(['username'=>$model->username]);
+
+                //2. 判断用户是否存在  // 3.判断密码是否正确
+
+                if ($user && \Yii::$app->security->validatePassword($model->password,$user->password_hash)) {
+                    //用户登录
+
+                    \Yii::$app->user->login($user,$model->rememberMe?3600*24*7:0);
+
+
+
+                    return $this->redirect(['index/index']);
+
+
+                }else{
+
+
+                    //密码错误或者用户名不存在
+
+                    echo "密码错误";exit;
+
+
+
+                }
+
+
+
+
+            }
+
+
+
+           // var_dump($model->errors);exit;
+
+
+
+
+
+
+           // var_dump($request->post());
+        }
+
+
+        return $this->render('login');
+
+        
+    }
+    
+
     public function actionSms($mobile){
 
        //发送验证
@@ -106,8 +182,8 @@ class UserController extends \yii\web\Controller
         $response = $aliSms->sendSms($mobile, 'SMS_120405838', ['code'=> $code], $config);
         var_dump($response);
         //3. 把验证码存起来
-        //  验证存session  13888888=》125445  13999999=》5456544
-        \Yii::$app->session->set($mobile,$code);
+        //  验证存session  tel_13888888=》125445  tel_13999999=》5456544
+        \Yii::$app->session->set("tel_".$mobile,$code);
 
         return $code;
     }
@@ -120,6 +196,16 @@ class UserController extends \yii\web\Controller
        return $code;
 
 
+
+    }
+
+    public function actionLogout()
+    {
+        if (\Yii::$app->user->logout()) {
+
+            return $this->redirect(['user/login']);
+
+        }
 
     }
 
