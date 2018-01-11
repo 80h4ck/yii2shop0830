@@ -80,4 +80,19 @@ class Goods extends \yii\db\ActiveRecord
             'create_at' => 'Create At',
         ];
     }
+    //得到商品详情 1对1
+    public function getIntro(){
+
+        return $this->hasOne(GoodsIntro::className(),['goods_id'=>'id']);
+
+    }
+
+    //得到商品对应的所有图片  1对多
+
+    public function getImages(){
+
+        return $this->hasMany(GoodsGallery::className(),['goods_id'=>'id']);
+
+
+    }
 }
