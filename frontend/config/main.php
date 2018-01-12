@@ -14,6 +14,9 @@ return [
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
+        'shopCart'=>[
+            'class'=>\frontend\components\ShopCart::className()
+        ],
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],
