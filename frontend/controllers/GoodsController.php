@@ -68,6 +68,28 @@ class GoodsController extends \yii\web\Controller
     public function actionAddCart($id, $amount)
     {
 
+        $good = Goods::findOne($id);
+        if ($good === null) {
+
+            return $this->goHome();
+        }
+
+        if ($good->stock < $amount) {
+
+            $js = <<<HTML
+<script>
+alert("库存不足");
+history.go(-1);
+</script>
+
+HTML;
+            return $js;
+
+            // return $this->goBack();
+
+        }
+
+
         //未登录 存Cookie
         if (\Yii::$app->user->isGuest) {
 
@@ -127,34 +149,28 @@ class GoodsController extends \yii\web\Controller
             //$shopCart->save();
 
 
-
-
-
         } else {
             // 已登录 存数据库  id goods_id  amount user_id
 
 
             //判断当前商品在数据库中是否存在
-            $userId=\Yii::$app->user->id;//用户Id
+            $userId = \Yii::$app->user->id;//用户Id
             //取出商品Id对应购物车数据
-            $cart=Cart::findOne(['goods_id'=>$id,'user_id'=>$userId]);
+            $cart = Cart::findOne(['goods_id' => $id, 'user_id' => $userId]);
 
             if ($cart) {
                 //如果存在 修改+$amount
-                $cart->amount+=$amount;
+                $cart->amount += $amount;
                 $cart->save();
 
-            }else{
+            } else {
                 //新增
-                $cart=new Cart();
-                $cart->amount=$amount;
-                $cart->goods_id=$id;
-                $cart->user_id=$userId;
+                $cart = new Cart();
+                $cart->amount = $amount;
+                $cart->goods_id = $id;
+                $cart->user_id = $userId;
                 $cart->save();
             }
-
-
-
 
 
         }
@@ -194,17 +210,17 @@ class GoodsController extends \yii\web\Controller
         } else {
             //登录 数据库
 
-            $userId=\Yii::$app->user->id;
-            $cart=Cart::find()->where(['user_id'=>$userId])->asArray()->all();
+            $userId = \Yii::$app->user->id;
+            $cart = Cart::find()->where(['user_id' => $userId])->asArray()->all();
 
 //1.2 取出所有商品Id，也就是Cookie购物车里的键
 
-            $cartGoods=ArrayHelper::map($cart,'goods_id','amount');
-          //  var_dump($cartGoods);exit;
+            $cartGoods = ArrayHelper::map($cart, 'goods_id', 'amount');
+            //  var_dump($cartGoods);exit;
             //提取所有商品Id
-            $goodIds = array_column($cart,'goods_id');
+            $goodIds = array_column($cart, 'goods_id');
 
-           // var_dump($goodIds);exit;
+            // var_dump($goodIds);exit;
             //1.3 通过商品Id把所有商品取出来
 
             $goods = Goods::find()->where(['in', 'id', $goodIds])->asArray()->all();
